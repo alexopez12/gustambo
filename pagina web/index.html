@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lluvia con una sola imagen</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: black;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    const imgWidth = 350;
+    const imgHeight = 300;
+    let columns = Math.floor(width / imgWidth);
+    let drops = Array(columns).fill(1);
+
+    // Carga solo una imagen
+    const image = new Image();
+    image.src = 'https://media.discordapp.net/attachments/1232131095252828203/1390504713287368705/DCB652C9-B086-4E11-9A05-4666D10CDA1E.jpg?ex=68687fed&is=68672e6d&hm=39e77c2722449c09c8d35c2b6ceee2b9d987bcf095cfeaa606e365fc3e9fb2bb&=&format=webp&width=959&height=544'; // Pon aquí tu URL o ruta de imagen
+
+    image.onload = () => {
+      draw();
+    };
+
+    function draw() {
+      ctx.fillStyle = "black";// Fondo con algo de opacidad para rastro suave
+      ctx.fillRect(0, 0, width, height);
+
+      for (let i = 0; i < drops.length; i++) {
+        ctx.drawImage(image, i * imgWidth, drops[i] * imgHeight, imgWidth, imgHeight);
+
+        if (drops[i] * imgHeight > height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i] += 0.1; // Velocidad de caída cómoda
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      columns = Math.floor(width / imgWidth);
+      drops = Array(columns).fill(1);
+    });
+  </script>
+</body>
+</html>
+
